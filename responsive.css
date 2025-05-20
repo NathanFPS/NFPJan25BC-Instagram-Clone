@@ -1,0 +1,13 @@
+@media (max-width: 768px) {
+  #sidebar {
+    width: 60px;
+  }
+
+  #sidebar button {
+    font-size: 20px;
+  }
+
+  section {
+    padding: 16px 12px;
+  }
+}
