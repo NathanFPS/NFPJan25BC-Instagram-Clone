@@ -66,7 +66,6 @@ const modalImg = modal.querySelector("img");
 const modalCaption = modal.querySelector(".modal-caption p");
 const closeBtn = modal.querySelector(".close-btn");
 
-
 const sections = {
   feed: document.getElementById('feed-section'),
   upload: document.getElementById('upload-section'),
@@ -202,26 +201,51 @@ signupForm.onsubmit = async (e) => {
 
 // Load posts from Firestore in realtime
 const loadPosts = () => {
-  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+  const postsQuery = query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc")
+  );
 
   onSnapshot(postsQuery, (snapshot) => {
-    postsContainer.innerHTML = ""; // Clear current posts
+    // Remove previously rendered real posts
+    const realPosts = postsContainer.querySelectorAll(".real-post");
+    realPosts.forEach((el) => el.remove());
+
+    // Use fragment for better performance
+    const fragment = document.createDocumentFragment();
 
     snapshot.forEach((doc) => {
       const post = doc.data();
-      postsContainer.appendChild(createPostElement(post));
+      const el = createPostElement(post);
+      fragment.appendChild(el);
     });
+
+    // Insert UGC before preset posts
+    const firstPreset = postsContainer.querySelector(".post:not(.real-post)");
+    if (firstPreset) {
+      postsContainer.insertBefore(fragment, firstPreset);
+    } else {
+      postsContainer.appendChild(fragment);
+    }
   });
 };
+
 
 // Create post DOM element
 const createPostElement = (post) => {
   const postEl = document.createElement("div");
-  postEl.classList.add("post");
+  postEl.classList.add("post", "real-post");
 
   const img = document.createElement("img");
   img.src = post.imageUrl;
   img.alt = post.caption || "User post";
+
+  img.addEventListener("click", () => {
+    modalImg.src = img.src;
+    modalImg.alt = img.alt;
+    modalCaption.textContent = post.caption || "";
+    modal.classList.add("show");
+  });
 
   const caption = document.createElement("p");
   caption.classList.add("caption");
@@ -245,42 +269,26 @@ uploadForm.onsubmit = async (e) => {
   }
 
   if (offlineMode) {
-    // Local upload path (no Firebase)
+    // OFFLINE-FLAGGED Firestore upload (base64)
     const reader = new FileReader();
-    reader.onload = function (event) {
-      const imageUrl = event.target.result;
-      const localPost = { imageUrl, caption }
-      let localPosts = JSON.parse(localStorage.getItem("localPosts")) || [];
-      localPosts.push(localPost);
-      localStorage.setItem("localPosts", JSON.stringify(localPosts));
-
-      const postEl = document.createElement("div");
-      postEl.classList.add("post");
-
-      const img = document.createElement("img");
-      img.src = imageUrl;
-      img.alt = caption;
-
-      const captionEl = document.createElement("p");
-      captionEl.classList.add("caption");
-      captionEl.textContent = caption;
-
-      img.addEventListener("click", () => {
-        modalImg.src = img.src;
-        modalImg.alt = img.alt;
-        modalCaption.textContent = caption;
-        modal.classList.add("show");
-      });
-
-      postEl.appendChild(img);
-      postEl.appendChild(captionEl);
-      postsContainer.prepend(postEl);
-
-      uploadForm.reset();
-      showSection("feed");
-      renderLocalPostsInProfile();
+    const auth = getAuth();
+    const currentUser = auth.currentUser;
+    reader.onload = async function (event) {
+      const base64Image = event.target.result;
+      try {
+        await addDoc(collection(db, "posts"), {
+          userId: currentUser.uid,
+          caption,
+          imageUrl: base64Image,   // store base64 so it “lives” in Firestore
+          offline: true,           // mark it as offline-mode
+          createdAt: serverTimestamp(),
+        });
+        uploadForm.reset();
+        showSection("feed");
+      } catch (err) {
+        alert(`Firestore upload failed: ${err.message}`);
+      }
     };
-
     reader.readAsDataURL(file);
   } else {
     // Firebase upload path
@@ -311,65 +319,107 @@ uploadForm.onsubmit = async (e) => {
   }
 };
 
-const renderLocalPostsInProfile = () => {
-  // Container for local posts inside profile
-  let localPostsContainer = document.getElementById("local-posts-profile");
+import { getDocs, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-  if (!localPostsContainer) {
-    localPostsContainer = document.createElement("div");
-    localPostsContainer.id = "local-posts-profile";
-    localPostsContainer.style.marginTop = "1rem";
-
-    const title = document.createElement("h3");
-    title.textContent = "Your Local Posts (Offline Mode)";
-    localPostsContainer.appendChild(title);
-
-    profileInfo.appendChild(localPostsContainer);
+const renderLocalPostsInProfile = async () => {
+  let container = document.getElementById("local-posts-profile");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "local-posts-profile";
+    container.style.marginTop = "1rem";
+    container.innerHTML = "<h3>Your Offline-Mode Posts</h3>";
+    profileInfo.appendChild(container);
+  } else {
+    container.innerHTML = "<h3>Your Offline-Mode Posts</h3>";
   }
 
-  localPostsContainer.innerHTML = '<h3>Your Local Posts (Offline Mode)</h3>'; // Reset content except title
-
-  const localPosts = JSON.parse(localStorage.getItem("localPosts")) || [];
-
-  if (localPosts.length === 0) {
-    const noPostsMsg = document.createElement("p");
-    noPostsMsg.textContent = "No offline posts yet.";
-    localPostsContainer.appendChild(noPostsMsg);
+  const user = auth.currentUser;
+  if (!user) {
+    container.innerHTML += "<p>Please log in to see your offline posts.</p>";
     return;
   }
 
-  [...localPosts].reverse().forEach(post => {
-    const postEl = document.createElement("div");
-    postEl.classList.add("post");
+  const q = query(
+    collection(db, "posts"),
+    where("userId", "==", user.uid),
+    where("offline", "==", true),
+    orderBy("createdAt", "desc")
+  );
 
-    const img = document.createElement("img");
-    img.src = post.imageUrl;
-    img.alt = post.caption || "Offline post";
+  try {
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      container.innerHTML += "<p>No offline posts yet.</p>";
+      return;
+    }
 
-    const caption = document.createElement("p");
-    caption.classList.add("caption");
-    caption.textContent = post.caption || "";
+    const fragment = document.createDocumentFragment();
 
-    img.addEventListener("click", () => {
-      modalImg.src = img.src;
-      modalImg.alt = img.alt;
-      modalCaption.textContent = caption.textContent;
-      modal.classList.add("show");
+    snap.forEach(doc => {
+      const post = doc.data();
+      const el = createPostElement(post);
+      el.querySelector("img").addEventListener("click", () => {
+        modalImg.src = post.imageUrl;
+        modalCaption.textContent = post.caption;
+        modal.classList.add("show");
+      });
+      fragment.appendChild(el);
     });
 
-    postEl.appendChild(img);
-    postEl.appendChild(caption);
-    localPostsContainer.appendChild(postEl);
-  });
+    container.appendChild(fragment);
+  } catch (err) {
+    container.innerHTML += `<p>Error loading offline posts: ${err.message}</p>`;
+  }
 };
 
+
 // Load user profile info
+let profileUnsubscribe = null; // to clean up listener if needed
+
 const loadUserProfile = (user) => {
   profileInfo.innerHTML = `
     <p><strong>Email:</strong> ${user.email}</p>
     <p><strong>UID:</strong> ${user.uid}</p>
   `;
+
+  const postsContainer = document.querySelector("#profile-section #posts-container");
+  postsContainer.innerHTML = ""; // clear old posts
+
+  const q = query(
+    collection(db, "posts"),
+    orderBy("createdAt", "desc")
+  );
+  
+  // Unsubscribe from any previous listener
+  if (profileUnsubscribe) {
+    profileUnsubscribe();
+  }
+
+  // Set up real-time listener
+  profileUnsubscribe = onSnapshot(q, (snapshot) => {
+    postsContainer.innerHTML = ""; // reset before rendering
+
+    if (snapshot.empty) {
+      postsContainer.innerHTML = `<p>No posts found.</p>`;
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+
+    snapshot.forEach((doc) => {
+      const postData = doc.data();
+      const postElement = createPostElement(postData);
+      fragment.appendChild(postElement);
+    });
+
+    postsContainer.appendChild(fragment);
+  }, (error) => {
+    console.error("Real-time profile listener error:", error);
+    postsContainer.innerHTML = `<p>Error loading posts.</p>`;
+  });
 };
+
+
 
 // Clicking outside modal closes it
 window.onclick = (e) => {
