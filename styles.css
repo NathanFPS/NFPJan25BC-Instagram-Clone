@@ -5,7 +5,7 @@ body {
     Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   margin: 0;
   background: #fafafa;
-  color: #262626;
+  color: white;
 }
 
 a {
@@ -23,13 +23,13 @@ header {
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: gray;
+  background-color: black;
 }
 
 header h1 {
   font-family: 'Billabong', cursive;
   font-size: 2.2rem;
-  color: #262626;
+  color: white;
   margin: 0;
 }
 
@@ -37,6 +37,7 @@ nav {
   display: flex;
   align-items: center;
   gap: 10px;
+  color: #fafafa;
 }
 
 button {
@@ -62,29 +63,26 @@ nav button:hover,
   gap: 12px;
 }
 
-/* Home Layout */
-/* Layout container for sidebar and content */
 main {
   display: flex;
   height: calc(100vh - 61px);
   overflow: hidden;
-  background-color: gray;
+  background-color: black;
 }
 
 /* Sidebar styles */
 #sidebar {
   width: 80px;
-  background-color: white;
   border-right: 1px solid #dbdbdb;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 20px;
   position: sticky;
-  top: 61px; /* Match header height */
+  top: 61px;
   height: calc(100vh - 61px);
   z-index: 99;
-  background-color: gray;
+  background-color: black;
 }
 
 #sidebar ul {
@@ -102,11 +100,15 @@ main {
   border: none;
   cursor: pointer;
   font-size: 24px;
-  color: #262626;
+  color: #fafafa;
 }
 
 #sidebar button:hover {
   color: #3897f0;
+}
+
+.i {
+  visibility: hidden;
 }
 
 /* Sections beside the sidebar */
@@ -126,11 +128,17 @@ section[hidden] {
 #feed-section {
   max-width: 630px;
   margin: 0 auto;
+  overflow-y: scroll; /* or auto, if you want it to only scroll when needed */
+  scrollbar-width: none; /* Firefox */
+}
+
+#feed-section::-webkit-scrollbar {
+  display: none;
 }
 
 /* Post Style */
 .post {
-  background: white;
+  background: black;
   border: 1px solid #dbdbdb;
   border-radius: 6px;
   overflow: hidden;
@@ -158,13 +166,42 @@ section[hidden] {
 
 .post img {
   width: 100%;
-  height: 300px;         /* Set a fixed height for uniform cropping */
-  object-fit: cover;     /* Crops the image to fill the area */
+  height: 300px;     
+  object-fit: cover;    
   display: block;
 }
 
-.post .caption {
-  display: none;
+.caption {
+  font-family: 'Georgia', serif;  /* Or use a custom font if imported */
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 10px 0;
+  padding: 5px 10px;
+  color: #fafafafa;
+}
+
+.divider {
+  height: 1px;
+  background-color: #ccc;
+  margin: 10px 0;
+}
+
+.actions,
+.caption,
+.views,
+.comments,
+.comment-input {
+  padding: 0 10px;
+}
+
+.left {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.comment-input {
+  padding-bottom: 10px;
 }
 
 /* Upload Form */
@@ -219,18 +256,23 @@ section[hidden] {
   align-items: center;
 }
 
+.modal .modal-content {
+  background-color: gray;
+}
+
 .modal.hidden {
   display: none;
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
+  display: none;
+  background-color: white;
+  padding: 10px;
   position: relative;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content.active {
+  display: block;
 }
 
 .modal-content h3 {
@@ -244,6 +286,14 @@ section[hidden] {
   top: 10px;
   right: 15px;
   font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 20px;
   cursor: pointer;
 }
 
@@ -278,7 +328,7 @@ textarea {
 }
 
 .modal-content {
-  background: gray;
+  background: black;
   display: flex;
   max-width: 90%;
   max-height: 90%;
@@ -289,30 +339,29 @@ textarea {
 }
 
 .modal-image img {
-  max-width: 100%;
-  max-height: 90vh;
-  height: auto;
-  width: auto;
+  width: 100%;
+  height: 50vh;         
+  object-fit: cover;   
   display: block;
-  object-fit: contain;
-}
-
-.modal-caption {
-  padding: 16px;
-  max-width: 300px;
-  overflow-y: auto;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start; /* Align horizontally to the left */
-  font-size: 16px;
 }
 
 .close-btn {
   position: absolute;
   top: 8px;
   right: 12px;
-  background: transparent;
   border: none;
   font-size: 28px;
   cursor: pointer;
+  background: black;
 }
+
+#profile-section {
+  overflow-y: scroll; /* or auto, if you want it to only scroll when needed */
+  scrollbar-width: none;
+}
+
+#profile-section::-webkit-scrollbar {
+  display: none;
+}
+
+

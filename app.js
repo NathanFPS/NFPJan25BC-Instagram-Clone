@@ -1,5 +1,3 @@
-// app.js - ES6 Module style
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
 import {
   getAuth,
@@ -133,7 +131,7 @@ onAuthStateChanged(auth, (user) => {
     loadPosts();
     loadUserProfile(user);
 
-    renderLocalPostsInProfile(); // Add this line
+    renderLocalPostsInProfile();
 
     showSection('feed'); // Automatically show feed
     document.getElementById('sidebar').style.display = 'flex';
@@ -147,7 +145,7 @@ onAuthStateChanged(auth, (user) => {
     profileSection.hidden = true;
     postsContainer.innerHTML = "";
     profileInfo.innerHTML = "";
-    showSection(null); // Or show a login screen/modal
+    showSection(null);
     document.getElementById('sidebar').style.display = 'none';
   }
 });
@@ -236,10 +234,35 @@ const createPostElement = (post) => {
   const postEl = document.createElement("div");
   postEl.classList.add("post", "real-post");
 
-  const img = document.createElement("img");
-  img.src = post.imageUrl;
-  img.alt = post.caption || "User post";
+  postEl.innerHTML = `
+    <div class="post-header">
+      <img class="profile-pic" src="${post.profilePic || 'https://randomuser.me/api/portraits/men/15.jpg'}" alt="Profile">
+      <div class="username">${post.username || "You"}</div>
+    </div>
+    <div class="modal-image">
+      <img src="${post.imageUrl}" alt="${post.caption || 'User post'}">
+    </div>
+    <div class="caption">${post.caption || ''}</div>
+    <div class="divider"></div>
+    <div class="actions">
+      <div class="left">
+        <i class="material-icons">favorite_border</i>
+        <i class="material-icons">chat_bubble_outline</i>
+        <i class="material-icons">send</i>
+        <i class="material-icons">bookmark_border</i>
+      </div>
+    </div>
+    <div class="views">0 likes</div>
+    <div class="divider"></div>
+    <div class="comments">
+      <div><span class="username"></span>Be the first comment.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="comment-input">Add a comment...</div>
+  `;
 
+  // Attach modal opening behavior
+  const img = postEl.querySelector(".modal-image img");
   img.addEventListener("click", () => {
     modalImg.src = img.src;
     modalImg.alt = img.alt;
@@ -247,11 +270,6 @@ const createPostElement = (post) => {
     modal.classList.add("show");
   });
 
-  const caption = document.createElement("p");
-  caption.classList.add("caption");
-  caption.textContent = post.caption || "";
-
-  postEl.append(img, caption);
   return postEl;
 };
 
@@ -269,7 +287,6 @@ uploadForm.onsubmit = async (e) => {
   }
 
   if (offlineMode) {
-    // OFFLINE-FLAGGED Firestore upload (base64)
     const reader = new FileReader();
     const auth = getAuth();
     const currentUser = auth.currentUser;
@@ -279,8 +296,8 @@ uploadForm.onsubmit = async (e) => {
         await addDoc(collection(db, "posts"), {
           userId: currentUser.uid,
           caption,
-          imageUrl: base64Image,   // store base64 so it “lives” in Firestore
-          offline: true,           // mark it as offline-mode
+          imageUrl: base64Image,   
+          offline: true,           
           createdAt: serverTimestamp(),
         });
         uploadForm.reset();
@@ -321,6 +338,7 @@ uploadForm.onsubmit = async (e) => {
 
 import { getDocs, where } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
+//Create a function to render local posts in the profile section from Firestore
 const renderLocalPostsInProfile = async () => {
   let container = document.getElementById("local-posts-profile");
   if (!container) {
@@ -368,13 +386,12 @@ const renderLocalPostsInProfile = async () => {
 
     container.appendChild(fragment);
   } catch (err) {
-    container.innerHTML += `<p>Error loading offline posts: ${err.message}</p>`;
+    
   }
 };
 
 
-// Load user profile info
-let profileUnsubscribe = null; // to clean up listener if needed
+let profileUnsubscribe = null;
 
 const loadUserProfile = (user) => {
   profileInfo.innerHTML = `
@@ -383,21 +400,19 @@ const loadUserProfile = (user) => {
   `;
 
   const postsContainer = document.querySelector("#profile-section #posts-container");
-  postsContainer.innerHTML = ""; // clear old posts
+  postsContainer.innerHTML = "";
 
   const q = query(
     collection(db, "posts"),
     orderBy("createdAt", "desc")
   );
   
-  // Unsubscribe from any previous listener
   if (profileUnsubscribe) {
     profileUnsubscribe();
   }
 
-  // Set up real-time listener
   profileUnsubscribe = onSnapshot(q, (snapshot) => {
-    postsContainer.innerHTML = ""; // reset before rendering
+    postsContainer.innerHTML = "";
 
     if (snapshot.empty) {
       postsContainer.innerHTML = `<p>No posts found.</p>`;

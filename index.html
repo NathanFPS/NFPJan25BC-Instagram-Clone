@@ -4,14 +4,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>InstaClone</title>
+  <title>Instagram Clone</title>
   <link rel="stylesheet" href="styles.css" />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 
 <body>
   <header>
-    <h1>InstaClone</h1>
+    <h1>Instagram</h1>
     <nav>
       <button id="btn-login">Login</button>
       <button id="btn-signup">Sign Up</button>
@@ -31,36 +31,174 @@
 
     <section id="feed-section">
       <div id="posts-container">
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=400" alt="Beautiful Landscape"
-            width="300" height="300">
-          <div class="caption">Nature's beauty 🌄</div>
+        <!-- Post 1 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/men/15.jpg" alt="Profile">
+        <div class="username">NatureLover</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=400" alt="Beautiful Landscape">
+      </div>
+      <div class="caption">Nature's beauty 🌄</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=400" alt="Mountain Landscape"
-            width="300" height="300">
-          <div class="caption">Chasing sunsets 🏞️</div>
+      </div>
+      <div class="views">10,241 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div><span class="username">alexis_w</span>: So peaceful 😍</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
+
+    <!-- Post 2 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/women/22.jpg" alt="Profile">
+        <div class="username">SunsetSeeker</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d?w=400" alt="Mountain Landscape">
+      </div>
+      <div class="caption">Chasing sunsets 🏞️</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1531251445707-1f000e1e87d0?w=400" alt="Cute cat" width="300"
-            height="300">
-          <div class="caption">Just vibing 🐱</div>
+      </div>
+      <div class="views">7,982 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div><span class="username">lily_r</span>: Dreamy ✨</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
+
+    <!-- Post 3 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/men/5.jpg" alt="Profile">
+        <div class="username">CatVibes</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1531251445707-1f000e1e87d0?w=400" alt="Cute cat">
+      </div>
+      <div class="caption">Just vibing 🐱😼😼</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1747330721960-681faaf7a92a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            alt="Dog" width="300" height="300">
-          <div class="caption">City shadows & neon hearts🌃💜</div>
+      </div>
+      <div class="views">15,120 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div><span class="username">momo_meow</span>: same here 💤</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
+
+    <!-- Post 4 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/women/16.jpg" alt="Profile">
+        <div class="username">'ScapeAesthetics</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1747330721960-681faaf7a92a?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Dog">
+      </div>
+      <div class="caption">City shadows & neon hearts🌃💜</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=400" alt="Food" width="300"
-            height="300">
-          <div class="caption">Brunch goals 🥐☕</div>
+      </div>
+      <div class="views">21,545 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div><span class="username">twilight_b</span>: neon perfection 💡</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
+
+    <!-- Post 5 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/men/7.jpg" alt="Profile">
+        <div class="username">BrunchBae</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=400" alt="Food">
+      </div>
+      <div class="caption">Brunch goals 🥐☕</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
-        <div class="post">
-          <img src="https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400" alt="Workspace" width="300"
-            height="300">
-          <div class="caption">Mood: productive 💻✨</div>
+      </div>
+      <div class="views">4,893 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div><span class="username">yumqueen</span>: i’m drooling 🤤</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
+
+    <!-- Post 6 -->
+    <div class="post">
+      <div class="post-header">
+        <img class="profile-pic" src="https://randomuser.me/api/portraits/men/40.jpg" alt="Profile">
+        <div class="username">WorkVibes</div>
+      </div>
+      <div class="modal-image">
+        <img src="https://images.unsplash.com/photo-1593642532973-d31b6557fa68?w=400" alt="Workspace">
+      </div>
+      <div class="caption">Mood: productive 💻✨</div>
+      <div class="divider"></div>
+      <div class="actions">
+        <div class="left">
+          <i class="material-icons">favorite_border</i>
+          <i class="material-icons">chat_bubble_outline</i>
+          <i class="material-icons">send</i>
+          <i class="material-icons">bookmark_border</i>
         </div>
+      </div>
+      <div class="views">9,404 likes</div>
+      <div class="divider"></div>
+      <div class="comments">
+        <div>
+        <span class="username">1_geek</span>: aesthetic af!</div>
+      </div>
+      <div class="divider"></div>
+      <div class="comment-input">Add a comment...</div>
+    </div>
       </div>
     </section>
 
@@ -101,8 +239,6 @@
 
       <div id="profile-info"></div>
 
-      <!-- Add this to display offline/local posts -->
-      <div id="local-posts-profile" style="margin-top: 1rem;"></div>
     </section>
   </main>
 
